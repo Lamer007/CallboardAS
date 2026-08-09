@@ -9,6 +9,11 @@ android {
         version = release(36)
     }
 
+    buildFeatures {
+        dataBinding = true
+        viewBinding = true
+    }
+
     defaultConfig {
         applicationId = "com.example.callboardas"
         minSdk = 24
