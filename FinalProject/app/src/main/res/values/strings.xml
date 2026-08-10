@@ -6,4 +6,8 @@
     <string name="service_button">Services</string>
     <string name="advert_button">Make Advert</string>
     <string name="account_button">Account</string>
+    <string name="email_text_plain">Enter Your Email</string>
+    <string name="password_text_plain">Enter Your Password</string>
+    <string name="login_button">Log In</string>
+    <string name="registration_button">Registration</string>
 </resources>
