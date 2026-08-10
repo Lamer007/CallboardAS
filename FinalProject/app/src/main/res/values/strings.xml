@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">CallBoardAS</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="call_button">Calls</string>
+    <string name="service_button">Services</string>
+    <string name="advert_button">Make Advert</string>
+    <string name="account_button">Account</string>
 </resources>

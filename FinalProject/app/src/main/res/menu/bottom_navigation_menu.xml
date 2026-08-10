@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_call"
+        android:icon="@drawable/ic_call"
+        android:title="@string/call_button" />
+    <item
+        android:id="@+id/nav_service"
+        android:icon="@drawable/ic_serv"
+        android:title="@string/service_button" />
+    <item
+        android:id="@+id/nav_advert"
+        android:icon="@drawable/ic_adv"
+        android:title="@string/advert_button" />
+    <item
+        android:id="@+id/nav_account"
+        android:icon="@drawable/ic_acc"
+        android:title="@string/account_button" />
+</menu>
