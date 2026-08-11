@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">CallBoardAS</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="call_button">Calls</string>
     <string name="service_button">Services</string>
@@ -10,4 +9,29 @@
     <string name="password_text_plain">Enter Your Password</string>
     <string name="login_button">Log In</string>
     <string name="registration_button">Registration</string>
+    <string name="register_button">Register</string>
+    <string name="currency_text_view">Select preferred currency</string>
+    <string name="phone_text_plain">Enter Your Phone</string>
+    <string name="name_text_plain">Enter Your Name</string>
+    <string name="log_out_button">Log Out</string>
+    <string name="save_changes_button">Save Changes</string>
+    <string name="current_currency_text_view">Preferred currency</string>
+    <string name="current_name_text_view">Your name</string>
+    <string name="current_email_text_view">Your email</string>
+    <string name="current_phone_text_view">Your phone</string>
+    <string name="current_password_text_view">Your password</string>
+    <string name="current_account_text_view">Account Details</string>
+    <string name="backto_login_button">Back to Log In</string>
+    <string name="advert_type_text_view">Advert type</string>
+    <string name="call_type_radio_button">Call</string>
+    <string name="service_type_radio_button">Service</string>
+    <string name="title_text_view">Title</string>
+    <string name="title_text_plain">Enter Title</string>
+    <string name="description_text_view">Description</string>
+    <string name="description_text_plain">Enter Description</string>
+    <string name="address_text_view">Address</string>
+    <string name="address_text_plain">Enter Address</string>
+    <string name="price_text_view">Price</string>
+    <string name="price_text_plain">Enter Price</string>
+    <string name="create_advert_button">Create Advert</string>
 </resources>

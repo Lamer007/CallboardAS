@@ -1,14 +1,135 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/FrameLayoutAdvert"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".AdvertFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:orientation="vertical">
 
+        <TextView
+            android:id="@+id/textViewAdvertType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="50dp"
+            android:layout_marginTop="50dp"
+            android:text="@string/advert_type_text_view"
+            android:textSize="15sp" />
+
+        <RadioGroup
+            android:id="@+id/radioGroupAdvertType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="50dp"
+            android:layout_marginTop="5dp">
+
+            <RadioButton
+                android:id="@+id/radioButtonCall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/call_type_radio_button" />
+
+            <RadioButton
+                android:id="@+id/radioButtonService"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/service_type_radio_button" />
+        </RadioGroup>
+
+        <TextView
+            android:id="@+id/textViewAdvertTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="50dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/title_text_view"
+            android:textSize="15sp" />
+
+        <EditText
+            android:id="@+id/editTextAdvertTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="50dp"
+            android:layout_marginTop="5dp"
+            android:ems="10"
+            android:hint="@string/title_text_plain"
+            android:inputType="text"
+            android:minHeight="48dp"
+            android:text="" />
+
+        <TextView
+            android:id="@+id/textViewAdvertDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="50dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/description_text_view"
+            android:textSize="15sp" />
+
+        <EditText
+            android:id="@+id/editTextAdvertDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="50dp"
+            android:layout_marginTop="5dp"
+            android:ems="10"
+            android:hint="@string/description_text_plain"
+            android:inputType="textMultiLine"
+            android:minHeight="48dp"
+            android:text="" />
+
+        <TextView
+            android:id="@+id/textViewAdvertAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="50dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/address_text_view"
+            android:textSize="15sp" />
+
+        <EditText
+            android:id="@+id/editTextAdvertAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="50dp"
+            android:layout_marginTop="5dp"
+            android:ems="10"
+            android:hint="@string/address_text_plain"
+            android:inputType="text"
+            android:minHeight="48dp" />
+
+        <TextView
+            android:id="@+id/textViewAdvertPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="50dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/price_text_view"
+            android:textSize="15sp" />
+
+        <EditText
+            android:id="@+id/editTextAdvertPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="50dp"
+            android:layout_marginTop="5dp"
+            android:ems="10"
+            android:hint="@string/price_text_plain"
+            android:inputType="numberSigned"
+            android:minHeight="48dp" />
+
+        <Button
+            android:id="@+id/buttonCreate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="120dp"
+            android:layout_marginTop="30dp"
+            android:backgroundTint="@color/green"
+            android:text="@string/create_advert_button" />
+
+    </LinearLayout>
 </FrameLayout>
