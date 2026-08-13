@@ -36,18 +36,23 @@
         android:layout_marginHorizontal="50dp"
         android:layout_marginTop="20dp"
         android:text="@string/current_password_text_view"
-        android:textSize="15sp" />
+        android:textSize="15sp"/>
 
-    <EditText
-        android:id="@+id/editTextLogInPassword"
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="50dp"
         android:layout_marginTop="5dp"
-        android:ems="10"
+        android:minHeight="48dp"
         android:hint="@string/password_text_plain"
-        android:inputType="textPassword"
-        android:minHeight="48dp" />
+        app:endIconMode="password_toggle">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextLogInPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPassword" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/buttonLogIn"
