@@ -12,12 +12,12 @@ import com.example.callboardas.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
 
-    private lateinit var binding: ActivityMainBinding // creating binding
+    private lateinit var binding: ActivityMainBinding
+    private val db: DataBase by lazy { DataBase(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // setting up binding
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -28,35 +28,19 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             insets
         }
 
+        val extras = intent.extras
+
+        val userId = extras?.getInt("KEY_ID") ?: 0
+        //to do
+
         initComponents()
     }
 
     private fun  initComponents() {
-        val facultyList = listOf("BB", "AA", "CC")
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, facultyList)
-        //binding.spinnerFaculty.adapter = adapter // !implement spinnerFaculty
-
-        //binding.buttonSend.setOnClickListener(this) //!implement buttonSend button
+        println("ToDo")
     }
 
     override fun onClick(v: View?) {
-        /*
-        if(v?.id == binding.buttonSend.id) { //!implement buttonSend button
-                val intent = Intent(this, ConfirmationActivity::class.java) //Implement ConfirmatioonActivity
-                val name = binding.editTextName.text.toString()
-                // other views valls
-
-                val extras = Bundle().apply{
-                    putString("KEY_NAME", name)
-                    // other extras
-                }
-
-                intent.putExtras(extras)
-                startActivity(intent)
-            }
-        }
-
-         */
         println("Yeah")
     }
 

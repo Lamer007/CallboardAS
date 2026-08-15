@@ -15,6 +15,7 @@ import com.example.callboardas.databinding.ActivityRegistrationBinding
 class RegistrationActivity : AppCompatActivity(), View.OnClickListener {
 
     private lateinit var binding: ActivityRegistrationBinding
+    private val db: DataBase by lazy { DataBase(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,8 +68,8 @@ class RegistrationActivity : AppCompatActivity(), View.OnClickListener {
             return
         }
 
-        if(!phone.matches("^0\\d{9}$".toRegex())) {
-            Toast.makeText(this@RegistrationActivity, "Please enter your phone correctly example: 0XXXXXXXXX", Toast.LENGTH_SHORT).show()
+        if(!phone.matches("^381\\d{9}$".toRegex())) {
+            Toast.makeText(this@RegistrationActivity, "Please enter your phone correctly example: 381XXXXXXXXX", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -77,15 +78,19 @@ class RegistrationActivity : AppCompatActivity(), View.OnClickListener {
             return
         }
 
-        //if() {
-        //    Toast.makeText(this@RegistrationActivity, "Email address already registered", Toast.LENGTH_SHORT).show()
-        //    return
-        //}
+        if(db.getUserIdByEmail(email) > -1) {
+            Toast.makeText(this@RegistrationActivity, "Email address already registered", Toast.LENGTH_SHORT).show()
+            return
+        }
+        else {
+            db.addUser(name, email, phone.toLong(), password, currency)
+        }
 
         val extras = Bundle().apply {
+            putInt("KEY_ID", db.getUserIdByEmail(email))
             putString("KEY_NAME", name)
             putString("KEY_EMAIL", email)
-            putInt("KEY_PHONE", phone.toInt())
+            putLong("KEY_PHONE", phone.toLong())
             putString("KEY_PASSWORD", password)
             putString("KEY_CURRENCY", currency)
         }

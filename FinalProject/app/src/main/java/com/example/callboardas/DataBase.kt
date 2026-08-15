@@ -53,7 +53,7 @@ class DataBase(context: Context): SQLiteOpenHelper(context, DATABASE_FILE_NAME, 
         onCreate(db)
     }
 
-    fun addUser(name: String, email: String, phone: Int, password: String, currency: String) {
+    fun addUser(name: String, email: String, phone: Long, password: String, currency: String) {
         val db = writableDatabase
         val cv = ContentValues()
         cv.put(UserModel.COLUMN_USER_NAME, name)
@@ -65,7 +65,7 @@ class DataBase(context: Context): SQLiteOpenHelper(context, DATABASE_FILE_NAME, 
     }
 
     fun addCall(name: String, description: String, address: String, author: String, authorId: Int,
-                phone: Int, price: Int, currency: String) {
+                phone: Long, price: Int, currency: String) {
         val db = writableDatabase
         val cv = ContentValues()
         cv.put(CallModel.COLUMN_CALL_NAME, name)
@@ -80,7 +80,7 @@ class DataBase(context: Context): SQLiteOpenHelper(context, DATABASE_FILE_NAME, 
     }
 
     fun addService(name: String, description: String, address: String, author: String, authorId: Int,
-                   phone: Int, price: Int, currency: String) {
+                   phone: Long, price: Int, currency: String) {
         val db = writableDatabase
         val cv = ContentValues()
         cv.put(ServiceModel.COLUMN_SERVICE_NAME, name)
@@ -105,7 +105,7 @@ class DataBase(context: Context): SQLiteOpenHelper(context, DATABASE_FILE_NAME, 
             val address = cursor.getString(cursor.getColumnIndexOrThrow(CallModel.COLUMN_CALL_ADDRESS))
             val author = cursor.getString(cursor.getColumnIndexOrThrow(CallModel.COLUMN_CALL_AUTHOR))
             val authorId = cursor.getInt(cursor.getColumnIndexOrThrow(CallModel.COLUMN_CALL_AUTHOR_ID))
-            val phone = cursor.getInt(cursor.getColumnIndexOrThrow(CallModel.COLUMN_CALL_PHONE))
+            val phone = cursor.getLong(cursor.getColumnIndexOrThrow(CallModel.COLUMN_CALL_PHONE))
             val price = cursor.getInt(cursor.getColumnIndexOrThrow(CallModel.COLUMN_CALL_PRICE))
             val currency = cursor.getString(cursor.getColumnIndexOrThrow(CallModel.COLUMN_CALL_CURRENCY))
             return CallModel(callId, name, description, address, author, authorId, phone, price, currency)
@@ -123,32 +123,33 @@ class DataBase(context: Context): SQLiteOpenHelper(context, DATABASE_FILE_NAME, 
             val address = cursor.getString(cursor.getColumnIndexOrThrow(ServiceModel.COLUMN_SERVICE_ADDRESS))
             val author = cursor.getString(cursor.getColumnIndexOrThrow(ServiceModel.COLUMN_SERVICE_AUTHOR))
             val authorId = cursor.getInt(cursor.getColumnIndexOrThrow(ServiceModel.COLUMN_SERVICE_AUTHOR_ID))
-            val phone = cursor.getInt(cursor.getColumnIndexOrThrow(ServiceModel.COLUMN_SERVICE_PHONE))
+            val phone = cursor.getLong(cursor.getColumnIndexOrThrow(ServiceModel.COLUMN_SERVICE_PHONE))
             val price = cursor.getInt(cursor.getColumnIndexOrThrow(ServiceModel.COLUMN_SERVICE_PRICE))
             val currency = cursor.getString(cursor.getColumnIndexOrThrow(ServiceModel.COLUMN_SERVICE_CURRENCY))
             return ServiceModel(serviceId, name, description, address, author, authorId, phone, price, currency)
         } else return null
     }
 
-    fun getUserById(userId: Int): Any?{
+    fun getUserById(userId: Int): UserModel?{
         val db = readableDatabase
         val query = """SELECT * FROM ${UserModel.TABLE_NAME} WHERE ${UserModel.COLUMN_USER_ID} = ?""".trimIndent()
         val cursor: Cursor = db.rawQuery(query, arrayOf(userId.toString()))
 
-        return if(cursor.moveToFirst()) {
+        if(cursor.moveToFirst()) {
             val name = cursor.getString(cursor.getColumnIndexOrThrow(UserModel.COLUMN_USER_NAME))
             val email = cursor.getString(cursor.getColumnIndexOrThrow(UserModel.COLUMN_USER_EMAIL))
-            val phone = cursor.getInt(cursor.getColumnIndexOrThrow(UserModel.COLUMN_USER_PHONE))
+            val phone = cursor.getLong(cursor.getColumnIndexOrThrow(UserModel.COLUMN_USER_PHONE))
             val password = cursor.getString(cursor.getColumnIndexOrThrow(UserModel.COLUMN_USER_PASSWORD))
             val currency = cursor.getString(cursor.getColumnIndexOrThrow(UserModel.COLUMN_USER_CURRENCY))
+            return UserModel(userId, name, email, phone, password, currency)
         } else return null
     }
 
-    fun getUserByEmail(email: String): Boolean{
+    fun getUserIdByEmail(email: String): Int{
         val db = readableDatabase
         val query = """SELECT * FROM ${UserModel.TABLE_NAME} WHERE ${UserModel.COLUMN_USER_EMAIL} = ?""".trimIndent()
         val cursor: Cursor = db.rawQuery(query, arrayOf(email))
-        return if(cursor.moveToFirst()) { true } else return false
+        return if(cursor.moveToFirst()) { cursor.getInt(cursor.getColumnIndexOrThrow(UserModel.COLUMN_USER_ID)) } else return -1
     }
 
     fun getAllCalls(): List<CallModel> {
@@ -164,7 +165,7 @@ class DataBase(context: Context): SQLiteOpenHelper(context, DATABASE_FILE_NAME, 
             val address = cursor.getString(cursor.getColumnIndexOrThrow(CallModel.COLUMN_CALL_ADDRESS))
             val author = cursor.getString(cursor.getColumnIndexOrThrow(CallModel.COLUMN_CALL_AUTHOR))
             val authorId = cursor.getInt(cursor.getColumnIndexOrThrow(CallModel.COLUMN_CALL_AUTHOR_ID))
-            val phone = cursor.getInt(cursor.getColumnIndexOrThrow(CallModel.COLUMN_CALL_PHONE))
+            val phone = cursor.getLong(cursor.getColumnIndexOrThrow(CallModel.COLUMN_CALL_PHONE))
             val price = cursor.getInt(cursor.getColumnIndexOrThrow(CallModel.COLUMN_CALL_PRICE))
             val currency = cursor.getString(cursor.getColumnIndexOrThrow(CallModel.COLUMN_CALL_CURRENCY))
             callList.add(CallModel(callId, name, description, address, author, authorId, phone, price, currency))
@@ -187,7 +188,7 @@ class DataBase(context: Context): SQLiteOpenHelper(context, DATABASE_FILE_NAME, 
             val address = cursor.getString(cursor.getColumnIndexOrThrow(ServiceModel.COLUMN_SERVICE_ADDRESS))
             val author = cursor.getString(cursor.getColumnIndexOrThrow(ServiceModel.COLUMN_SERVICE_AUTHOR))
             val authorId = cursor.getInt(cursor.getColumnIndexOrThrow(ServiceModel.COLUMN_SERVICE_AUTHOR_ID))
-            val phone = cursor.getInt(cursor.getColumnIndexOrThrow(ServiceModel.COLUMN_SERVICE_PHONE))
+            val phone = cursor.getLong(cursor.getColumnIndexOrThrow(ServiceModel.COLUMN_SERVICE_PHONE))
             val price = cursor.getInt(cursor.getColumnIndexOrThrow(ServiceModel.COLUMN_SERVICE_PRICE))
             val currency = cursor.getString(cursor.getColumnIndexOrThrow(ServiceModel.COLUMN_SERVICE_CURRENCY))
             callList.add(ServiceModel(serviceId, name, description, address, author, authorId, phone, price, currency))
@@ -228,7 +229,7 @@ class DataBase(context: Context): SQLiteOpenHelper(context, DATABASE_FILE_NAME, 
     }
 
     fun editCall(callId: Int, name: String, description: String, address: String, author: String, authorId: Int,
-                 phone: Int, price: Int, currency: String) {
+                 phone: Long, price: Int, currency: String) {
         val db = writableDatabase
         val cv = ContentValues()
         cv.put(CallModel.COLUMN_CALL_NAME, name)
@@ -243,7 +244,7 @@ class DataBase(context: Context): SQLiteOpenHelper(context, DATABASE_FILE_NAME, 
     }
 
     fun editService(serviceId: Int, name: String, description: String, address: String, author: String, authorId: Int,
-                    phone: Int, price: Int, currency: String) {
+                    phone: Long, price: Int, currency: String) {
         val db = writableDatabase
         val cv = ContentValues()
         cv.put(ServiceModel.COLUMN_SERVICE_NAME, name)
@@ -257,7 +258,7 @@ class DataBase(context: Context): SQLiteOpenHelper(context, DATABASE_FILE_NAME, 
         db.update(ServiceModel.TABLE_NAME, cv, "${ServiceModel.COLUMN_SERVICE_ID} = ?", arrayOf(serviceId.toString()))
     }
 
-    fun editUser(userId: Int, name: String, email: String, phone: Int, password: String, currency: String) {
+    fun editUser(userId: Int, name: String, email: String, phone: Long, password: String, currency: String) {
         val db = writableDatabase
         val cv = ContentValues()
         cv.put(UserModel.COLUMN_USER_NAME, name)
@@ -277,7 +278,7 @@ class DataBase(context: Context): SQLiteOpenHelper(context, DATABASE_FILE_NAME, 
 
         for (serviceId in serviceIdList) {
             val service: ServiceModel? = getServiceById(serviceId)
-            editCall(service!!.serviceId, service.name, service.description, service.address, name, service.authorId, phone, service.price, service.currency)
+            editService(service!!.serviceId, service.name, service.description, service.address, name, service.authorId, phone, service.price, service.currency)
         }
 
         db.update(UserModel.TABLE_NAME, cv, "${UserModel.COLUMN_USER_ID} = ?", arrayOf(userId.toString()))

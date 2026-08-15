@@ -1,6 +1,6 @@
 package com.example.callboardas
 
-data class UserModel(val userId: Int, val name: String, val email: String, val phone: Int, val password: String,
+data class UserModel(val userId: Int, val name: String, val email: String, val phone: Long, val password: String,
                      val currency: String) {
     companion object {
         const val TABLE_NAME = "user"

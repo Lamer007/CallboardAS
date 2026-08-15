@@ -57,6 +57,8 @@ class AdvertFragment : Fragment() {
             }
     }
 
-    // val selectedRadioButtonId = binding.radioGroupAdvertType.checkedRadioButtonId
-    // val advertType = if (selectedRadioButtonId != -1) { findViewId<android.widget.RadioButton>(selectedRadioButtonId).text.toString() } else {""}
+    // val advertType = when(binding.radioGroupAdvertType.checkedRadioButtonId) {
+    // binding.radioButtonCall.id -> binding.radioButtonCall.text.toString()
+    // binding.radioButtonService.id -> binding.radioButtonService.text.toString()
+    // else -> ""}
 }

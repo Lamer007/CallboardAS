@@ -12,9 +12,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CallBoardAS">
         <activity
-            android:name=".RegistrationActivity"
-            android:exported="true" />
-        <activity
             android:name=".LogInActivity"
             android:exported="true">
             <intent-filter>
@@ -23,9 +20,11 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".RegistrationActivity"
+            android:exported="false"/>
+        <activity
             android:name=".MainActivity"
-            android:exported="true">
-        </activity>
+            android:exported="false"/>
     </application>
 
 </manifest>

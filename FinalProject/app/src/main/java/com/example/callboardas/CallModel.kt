@@ -1,7 +1,7 @@
 package com.example.callboardas
 
 data class CallModel(val callId: Int, val name: String, val description: String, val address: String, val author: String, val authorId: Int,
-    val phone: Int, val price: Int, val currency: String) {
+    val phone: Long, val price: Int, val currency: String) {
     companion object {
         const val TABLE_NAME = "call"
         const val COLUMN_CALL_ID = "call_id"
