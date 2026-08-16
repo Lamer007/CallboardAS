@@ -8,9 +8,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import kotlin.math.round
 
-class CallAdapter(val calls: List<CallModel>, private val context: Context, val preferedCurn: String): RecyclerView.Adapter<CallAdapter.ViewHolderClass>() {
+class ServiceAdapter(val calls: List<ServiceModel>, private val context: Context, val preferedCurn: String): RecyclerView.Adapter<ServiceAdapter.ViewHolderClass>(){
     private val db: DataBase by lazy { DataBase(context) }
-    var onItemClick: ((CallModel) -> Unit)? = null
+    var onItemClick: ((ServiceModel) -> Unit)? = null
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolderClass {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.recycler_item, parent, false)
         return ViewHolderClass(itemView)

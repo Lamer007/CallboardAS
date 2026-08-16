@@ -19,7 +19,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var binding: ActivityMainBinding
     private val db: DataBase by lazy { DataBase(this) }
 
-    lateinit var preferredCurrency: String
+    lateinit var currentUser: UserModel
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,13 +36,14 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         }
 
         val extras = intent.extras
-//        val userId = extras?.getInt("KEY_ID") ?: -1
-//        val name = extras?.getString("KEY_NAME") ?: ""
-//        val email = extras?.getString("KEY_EMAIL") ?: ""
-//        val phone = extras?.getLong("KEY_PHONE") ?: 0L
-//        val password = extras?.getString("KEY_PASSWORD") ?: ""
-//        val preferredCurrency = extras?.getString("KEY_CURRENCY") ?: "RSD"
-        preferredCurrency = extras?.getString("KEY_CURRENCY") ?: "RSD"
+        val userId = extras?.getInt("KEY_ID") ?: -1
+        val name = extras?.getString("KEY_NAME") ?: ""
+        val email = extras?.getString("KEY_EMAIL") ?: ""
+        val phone = extras?.getLong("KEY_PHONE") ?: 0L
+        val password = extras?.getString("KEY_PASSWORD") ?: ""
+        val preferredCurrency = extras?.getString("KEY_CURRENCY") ?: "RSD"
+
+        currentUser = UserModel(userId, name, email, phone, password, preferredCurrency)
         initComponents()
 
     }
@@ -54,7 +56,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         lifecycleScope.launchWhenStarted {
             val api = ApiRepository()
             for(currency in currencies){
-                val result = api.getCurrency("https://api.frankfurter.dev/v2/rate/${currency}/${preferredCurrency}")
+                val result = api.getCurrency("https://api.frankfurter.dev/v2/rate/${currency}/${currentUser.currency}")
                 val cur = result.fold(onSuccess = {it}, onFailure = { CurrencyModel(1.0, currency)})
 
                 if(db.getCurrencyByName(currency) == -5.0){
@@ -65,6 +67,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 }
             }
             fragmentCall?.updateAdapter()
+            fragmentService?.updateAdapter()
         }
 
         binding.bottomNavigationView.setOnItemSelectedListener { item ->
@@ -75,6 +78,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                     true}
                 R.id.nav_service -> {
                     supportFragmentManager.beginTransaction().replace(R.id.fragmentContainerView,ServicesFragment()).commit()
+                    fragmentService?.updateAdapter()
                     true}
                 R.id.nav_advert -> {
                     supportFragmentManager.beginTransaction().replace(R.id.fragmentContainerView,AdvertFragment()).commit()

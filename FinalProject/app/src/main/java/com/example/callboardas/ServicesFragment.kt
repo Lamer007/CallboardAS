@@ -1,59 +1,86 @@
 package com.example.callboardas
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SearchView
+import androidx.recyclerview.widget.RecyclerView
+import android.widget.TextView
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.callboardas.databinding.FragmentServicesBinding
+import kotlin.lazy
+import kotlin.toString
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [ServicesFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ServicesFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+    private var _binding: FragmentServicesBinding? = null
+    private val binding get() = _binding!!
+    private var mListener: OnFragmentInteractionListener? = null
+
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var searchView: SearchView
+    private lateinit var serviceAdapter: ServiceAdapter
+    private val db: DataBase by lazy { DataBase(requireContext()) }
+
+    interface OnFragmentInteractionListener {
+        fun theChosenService(callId: Int)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_services, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        _binding = FragmentServicesBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ServicesFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ServicesFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val mainActivity = activity as? MainActivity
+        val prefereCurn = mainActivity?.currentUser?.currency
+
+        recyclerView = binding.recyclerViewServices
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        searchView = binding.searchViewServices
+        serviceAdapter = ServiceAdapter(db.getAllServices(), requireContext(), prefereCurn.toString())
+
+        updateAdapter()
+        setupSearch(prefereCurn.toString())
+    }
+    fun updateAdapter() {
+        recyclerView.adapter = serviceAdapter
+    }
+
+    private fun setupSearch(prefereCurn: String) {
+        searchView.setOnQueryTextListener(
+            object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    filterServices(query, prefereCurn)
+                    return true
+                }
+
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    filterServices(newText, prefereCurn)
+                    return true
                 }
             }
+        )
+    }
+
+    private fun filterServices(query: String?, prefereCurn: String) {
+        if (query.isNullOrBlank()) {
+            serviceAdapter = ServiceAdapter(db.getAllServices(), requireContext(), prefereCurn)
+            updateAdapter()
+            return
+        }
+
+        val filteredCalls = db.getAllServices().filter { call ->
+            call.name.contains(query, ignoreCase = true)
+        }
+
+        serviceAdapter = ServiceAdapter(filteredCalls, requireContext(), prefereCurn)
+        updateAdapter()
     }
 }

@@ -23,7 +23,6 @@ class CallsFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var searchView: SearchView
     private lateinit var callAdapter: CallAdapter
-    //private val db: DataBase by lazy { DataBase(this.getActivity()) }
     private val db: DataBase by lazy { DataBase(requireContext()) }
 
     interface OnFragmentInteractionListener {
@@ -38,17 +37,49 @@ class CallsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val currencies = listOf<String>("RSD", "EUR", "USD")
+        val mainActivity = activity as? MainActivity
+        val prefereCurn = mainActivity?.currentUser?.currency
 
         recyclerView = binding.recyclerViewCalls
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         searchView = binding.searchViewCalls
+        callAdapter = CallAdapter(db.getAllCalls(), requireContext(), prefereCurn.toString())
 
-        callAdapter = CallAdapter(db.getAllCalls(), requireContext())
+        updateAdapter()
+        setupSearch(prefereCurn.toString())
+    }
+    fun updateAdapter() {
         recyclerView.adapter = callAdapter
     }
 
-    fun updateAdapter() {
-        recyclerView.adapter = callAdapter
+    private fun setupSearch(prefereCurn: String) {
+        searchView.setOnQueryTextListener(
+            object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    filterCalls(query, prefereCurn)
+                    return true
+                }
+
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    filterCalls(newText, prefereCurn)
+                    return true
+                }
+            }
+        )
+    }
+
+    private fun filterCalls(query: String?, prefereCurn: String) {
+        if (query.isNullOrBlank()) {
+            callAdapter = CallAdapter(db.getAllCalls(), requireContext(), prefereCurn)
+            updateAdapter()
+            return
+        }
+
+        val filteredCalls = db.getAllCalls().filter { call ->
+            call.name.contains(query, ignoreCase = true)
+        }
+
+        callAdapter = CallAdapter(filteredCalls, requireContext(), prefereCurn)
+        updateAdapter()
     }
 }
