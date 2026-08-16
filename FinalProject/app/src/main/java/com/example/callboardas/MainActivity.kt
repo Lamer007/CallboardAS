@@ -20,6 +20,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     private val db: DataBase by lazy { DataBase(this) }
 
     lateinit var currentUser: UserModel
+    lateinit var currentCall: CallModel
+    lateinit var currentService: ServiceModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,7 +50,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     }
 
-    private fun  initComponents() {
+    fun  initComponents() {
         val currencies = listOf<String>("RSD", "EUR", "USD")
         val fragmentCall = supportFragmentManager.findFragmentById(binding.fragmentContainerView.id) as? CallsFragment
         val fragmentService = supportFragmentManager.findFragmentById(binding.fragmentContainerView.id) as? ServicesFragment

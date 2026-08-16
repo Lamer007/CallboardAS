@@ -1,59 +1,118 @@
 package com.example.callboardas
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.Button
+import android.widget.SearchView
+import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.callboardas.databinding.FragmentAccountBinding
+import kotlin.text.matches
+import kotlin.text.toLong
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [AccountFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class AccountFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private var _binding: FragmentAccountBinding? = null
+    private val binding get() = _binding!!
+    private var mListener: OnFragmentInteractionListener? = null
+    private val db: DataBase by lazy { DataBase(requireContext()) }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+    interface OnFragmentInteractionListener {
+        fun theChosenCall(callId: Int)
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        _binding = FragmentAccountBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        initComponents()
+    }
+
+    private fun  initComponents() {
+        val mainActivity = activity as? MainActivity
+        val userId = mainActivity?.currentUser?.userId
+        val name = mainActivity?.currentUser?.name
+        val email = mainActivity?.currentUser?.email
+        val phone = mainActivity?.currentUser?.phone
+        val password = mainActivity?.currentUser?.password
+        val currency = mainActivity?.currentUser?.currency
+
+        val currencyList = listOf("RSD", "EUR", "USD")
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, currencyList)
+        binding.spinnerCurrentCurrency.adapter = adapter
+        binding.spinnerCurrentCurrency.setSelection(currencyList.indexOf(currency.toString()))
+
+        binding.editTextCurrentName.setText(name.toString())
+        binding.editTextCurrentEmail.setText(email.toString())
+        binding.editTextCurrentPhone.setText(phone.toString())
+        binding.editTextCurrentPassword.setText(password.toString())
+
+        val saveChangesButton: Button = binding.buttonSaveChanges
+        saveChangesButton.setOnClickListener {
+            editAccount()
+        }
+
+        val exitButton: Button = binding.buttonLogOut
+        exitButton.setOnClickListener {
+            val intent = Intent(requireContext(), LogInActivity::class.java)
+            startActivity(intent)
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_account, container, false)
-    }
+    fun editAccount() {
+        val mainActivity = activity as? MainActivity
+        val userId = mainActivity?.currentUser?.userId
+        val name = mainActivity?.currentUser?.name
+        val email = mainActivity?.currentUser?.email
+        val phone = mainActivity?.currentUser?.phone
+        val password = mainActivity?.currentUser?.password
+        val currency = mainActivity?.currentUser?.currency
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment AccountFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            AccountFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+        val editedName = binding.editTextCurrentName.text.toString()
+        val editedEmail = binding.editTextCurrentEmail.text.toString()
+        val editedPhone = binding.editTextCurrentPhone.text.toString()
+        val editedPassword = binding.editTextCurrentPassword.text.toString()
+        val editedCurrency = binding.spinnerCurrentCurrency.selectedItem.toString()
+
+        if(editedName.isEmpty() || editedEmail.isEmpty() || editedPhone.isEmpty() || editedPassword.isEmpty() || editedCurrency.isEmpty()) {
+            Toast.makeText(requireContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        if(!editedEmail.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$".toRegex())) {
+            Toast.makeText(requireContext(), "Please enter your email correctly example: test@gmail.com", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        if(!editedPhone.matches("^381\\d{9}$".toRegex())) {
+            Toast.makeText(requireContext(), "Please enter your phone correctly example: 381XXXXXXXXX", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        if(!editedPassword.matches("^.{8,}$".toRegex())) {
+            Toast.makeText(requireContext(), "Please make your password 8 or more characters long", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        if(db.getUserIdByEmail(editedEmail) > -1 && email.toString() != editedEmail) {
+            Toast.makeText(requireContext(), "Email address already registered", Toast.LENGTH_SHORT).show()
+            return
+        }
+        else {
+            db.editUser(userId!!.toInt(), editedName, editedEmail, editedPhone.toLong(), editedPassword, editedCurrency)
+            mainActivity.currentUser = UserModel(userId.toInt(), editedName, editedEmail, editedPhone.toLong(), editedPassword, editedCurrency)
+            mainActivity.initComponents()
+            Toast.makeText(requireContext(), "Changes saved", Toast.LENGTH_SHORT).show()
+            return
+        }
     }
 }

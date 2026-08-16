@@ -47,6 +47,12 @@ class CallsFragment : Fragment() {
 
         updateAdapter()
         setupSearch(prefereCurn.toString())
+
+        callAdapter.onItemClick = {
+            val mainActivity = activity as? MainActivity
+            mainActivity?.currentCall = it
+            getParentFragmentManager().beginTransaction().replace(R.id.fragmentContainerView, ViewCallFragment()).commit()
+        }
     }
     fun updateAdapter() {
         recyclerView.adapter = callAdapter

@@ -48,6 +48,12 @@ class ServicesFragment : Fragment() {
 
         updateAdapter()
         setupSearch(prefereCurn.toString())
+
+        serviceAdapter.onItemClick = {
+            val mainActivity = activity as? MainActivity
+            mainActivity?.currentService = it
+            getParentFragmentManager().beginTransaction().replace(R.id.fragmentContainerView, ViewServiceFragment()).commit()
+        }
     }
     fun updateAdapter() {
         recyclerView.adapter = serviceAdapter

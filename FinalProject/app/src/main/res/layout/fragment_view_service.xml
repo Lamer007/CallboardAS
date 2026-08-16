@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ViewServiceFragment">
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/textViewSTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginHorizontal="50dp"
+                android:text=""
+                android:textSize="30sp"
+                android:textAlignment="center"/>/>
+
+            <TextView
+                android:id="@+id/textViewSDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginHorizontal="50dp"
+                android:textSize="15sp"
+                android:text="" />
+
+            <TextView
+                android:id="@+id/textViewSAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:layout_marginHorizontal="50dp"
+                android:textSize="15sp"
+                android:text="" />
+
+            <TextView
+                android:id="@+id/textViewSPhone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginHorizontal="50dp"
+                android:textSize="15sp"
+                android:text="" />
+
+            <TextView
+                android:id="@+id/textViewSAuthor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginHorizontal="50dp"
+                android:textSize="15sp"
+                android:text="" />
+
+            <TextView
+                android:id="@+id/textViewSPrice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:layout_marginHorizontal="50dp"
+                android:textSize="20sp"
+                android:text="" />
+        </LinearLayout>
+    </ScrollView>
+
+</FrameLayout>
