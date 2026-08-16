@@ -41,6 +41,9 @@ class LogInActivity : AppCompatActivity(), View.OnClickListener {
         db.addService("test12", "description12", "kumodrashka", "alex", 1, 123456789, 4321, "RSD")
         db.addService("test22", "description22", "ustanichka", "alex", 1, 123456789, 43, "EUR")
         db.addService("test32", "description32", "dositejeva", "alex", 1, 123456789, 21, "USD")
+        db.addCurrency("EUR", 117.0)
+        db.addCurrency("USD", 100.0)
+        db.addCurrency("RSD", 1.0)
     }
     private fun  initComponents() {
         addSomeAdvertsUsers()

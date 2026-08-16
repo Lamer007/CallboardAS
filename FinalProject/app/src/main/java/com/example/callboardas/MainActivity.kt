@@ -19,6 +19,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var binding: ActivityMainBinding
     private val db: DataBase by lazy { DataBase(this) }
 
+    lateinit var preferredCurrency: String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -33,33 +35,60 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         }
 
         val extras = intent.extras
-        val userId = extras?.getInt("KEY_ID") ?: -1
-        val name = extras?.getString("KEY_NAME") ?: ""
-        val email = extras?.getString("KEY_EMAIL") ?: ""
-        val phone = extras?.getLong("KEY_PHONE") ?: 0L
-        val password = extras?.getString("KEY_PASSWORD") ?: ""
-        val preferredCurrency = extras?.getString("KEY_CURRENCY") ?: "RSD"
-        initComponents(preferredCurrency)
+//        val userId = extras?.getInt("KEY_ID") ?: -1
+//        val name = extras?.getString("KEY_NAME") ?: ""
+//        val email = extras?.getString("KEY_EMAIL") ?: ""
+//        val phone = extras?.getLong("KEY_PHONE") ?: 0L
+//        val password = extras?.getString("KEY_PASSWORD") ?: ""
+//        val preferredCurrency = extras?.getString("KEY_CURRENCY") ?: "RSD"
+        preferredCurrency = extras?.getString("KEY_CURRENCY") ?: "RSD"
+        initComponents()
 
     }
 
-    private fun  initComponents(preferredCurrency: String) {
+    private fun  initComponents() {
         val currencies = listOf<String>("RSD", "EUR", "USD")
-        var rate = mutableMapOf<String, Double>()
+        val fragmentCall = supportFragmentManager.findFragmentById(binding.fragmentContainerView.id) as? CallsFragment
+        val fragmentService = supportFragmentManager.findFragmentById(binding.fragmentContainerView.id) as? ServicesFragment
 
         lifecycleScope.launchWhenStarted {
             val api = ApiRepository()
             for(currency in currencies){
-                val result = api.getCurrency("https://api.frankfurter.dev/v2/rate/${preferredCurrency}/${currency}")
+                val result = api.getCurrency("https://api.frankfurter.dev/v2/rate/${currency}/${preferredCurrency}")
                 val cur = result.fold(onSuccess = {it}, onFailure = { CurrencyModel(1.0, currency)})
-                rate[cur.currency] = cur.rate
+
+                if(db.getCurrencyByName(currency) == -5.0){
+                    db.addCurrency(currency, cur.rate)
+                }
+                else {
+                    db.editCurrency(db.getCurrencyIdByName(currency), currency, cur.rate)
+                }
             }
-            
+            fragmentCall?.updateAdapter()
+        }
+
+        binding.bottomNavigationView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_call -> {
+                    supportFragmentManager.beginTransaction().replace(R.id.fragmentContainerView,CallsFragment()).commit()
+                    fragmentCall?.updateAdapter()
+                    true}
+                R.id.nav_service -> {
+                    supportFragmentManager.beginTransaction().replace(R.id.fragmentContainerView,ServicesFragment()).commit()
+                    true}
+                R.id.nav_advert -> {
+                    supportFragmentManager.beginTransaction().replace(R.id.fragmentContainerView,AdvertFragment()).commit()
+                    true}
+                R.id.nav_account -> {
+                    supportFragmentManager.beginTransaction().replace(R.id.fragmentContainerView,AccountFragment()).commit()
+                    true}
+                else -> false
+            }
         }
     }
 
     override fun onClick(v: View?) {
-        println("Yeah")
+
     }
 
 }

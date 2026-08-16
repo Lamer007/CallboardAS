@@ -6,7 +6,7 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
-class DataBase(context: Context): SQLiteOpenHelper(context, DATABASE_FILE_NAME, null, 1) {
+class DataBase(context: Context): SQLiteOpenHelper(context, DATABASE_FILE_NAME, null, 2) {
 
     companion object{
         const val DATABASE_FILE_NAME = "callboard_database"
@@ -45,11 +45,27 @@ class DataBase(context: Context): SQLiteOpenHelper(context, DATABASE_FILE_NAME, 
         ${ServiceModel.COLUMN_SERVICE_PRICE} INTEGER,
         ${ServiceModel.COLUMN_SERVICE_CURRENCY} TEXT);""".trimIndent()
         db?.execSQL(query)
+
+        query = """CREATE TABLE IF NOT EXISTS ${CurrencyModel.TABLE_NAME}(
+        ${CurrencyModel.COLUMN_CURRENCY_ID} INTEGER PRIMARY KEY AUTOINCREMENT,    
+        ${CurrencyModel.COLUMN_CURRENCY_NAME} TEXT,       
+        ${CurrencyModel.COLUMN_CURRENCY_RATE} REAL)""".trimIndent()
+        db?.execSQL(query)
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-        val query = "DROP TABLE IF EXISTS ${UserModel.TABLE_NAME}"
+        var query = "DROP TABLE IF EXISTS ${UserModel.TABLE_NAME}"
         db?.execSQL(query)
+
+        query = "DROP TABLE IF EXISTS ${CallModel.TABLE_NAME}"
+        db?.execSQL(query)
+
+        query = "DROP TABLE IF EXISTS ${ServiceModel.TABLE_NAME}"
+        db?.execSQL(query)
+
+        query = "DROP TABLE IF EXISTS ${CurrencyModel.TABLE_NAME}"
+        db?.execSQL(query)
+
         onCreate(db)
     }
 
@@ -92,6 +108,31 @@ class DataBase(context: Context): SQLiteOpenHelper(context, DATABASE_FILE_NAME, 
         cv.put(ServiceModel.COLUMN_SERVICE_PRICE, price)
         cv.put(ServiceModel.COLUMN_SERVICE_CURRENCY, currency)
         db.insert(ServiceModel.TABLE_NAME, null,cv)
+    }
+
+    fun getCurrencyByName(name: String): Double{
+        val db = readableDatabase
+        val query = """SELECT * FROM ${CurrencyModel.TABLE_NAME} WHERE ${CurrencyModel.COLUMN_CURRENCY_NAME} = ?""".trimIndent()
+        val cursor: Cursor = db.rawQuery(query, arrayOf(name))
+        return if(cursor.moveToFirst()) { cursor.getDouble(cursor.getColumnIndexOrThrow(CurrencyModel.COLUMN_CURRENCY_RATE)) } else return -5.0
+    }
+
+    fun getCurrencyIdByName(name: String): Int{
+        val db = readableDatabase
+        val query = """SELECT * FROM ${CurrencyModel.TABLE_NAME} WHERE ${CurrencyModel.COLUMN_CURRENCY_NAME} = ?""".trimIndent()
+        val cursor: Cursor = db.rawQuery(query, arrayOf(name))
+        return if(cursor.moveToFirst()) { cursor.getInt(cursor.getColumnIndexOrThrow(CurrencyModel.COLUMN_CURRENCY_ID)) } else return -1
+    }
+
+    fun addCurrency(name: String, rate: Double) {
+        val db = writableDatabase
+        val cv = ContentValues()
+        if(getCurrencyByName(name) == -5.0)
+        {
+            cv.put(CurrencyModel.COLUMN_CURRENCY_NAME, name)
+            cv.put(CurrencyModel.COLUMN_CURRENCY_RATE, rate)
+            db.insert(CurrencyModel.TABLE_NAME, null,cv)
+        }
     }
 
     fun getCallById(callId: Int): CallModel?{
@@ -282,5 +323,14 @@ class DataBase(context: Context): SQLiteOpenHelper(context, DATABASE_FILE_NAME, 
         }
 
         db.update(UserModel.TABLE_NAME, cv, "${UserModel.COLUMN_USER_ID} = ?", arrayOf(userId.toString()))
+    }
+
+    fun editCurrency(currencyId: Int, name: String, rate: Double) {
+        val db = writableDatabase
+        val cv = ContentValues()
+        cv.put(CurrencyModel.COLUMN_CURRENCY_ID, currencyId)
+        cv.put(CurrencyModel.COLUMN_CURRENCY_NAME, name)
+        cv.put(CurrencyModel.COLUMN_CURRENCY_RATE, rate)
+        db.update(CurrencyModel.TABLE_NAME, cv, "${CurrencyModel.COLUMN_CURRENCY_ID} = ?", arrayOf(currencyId.toString()))
     }
 }
